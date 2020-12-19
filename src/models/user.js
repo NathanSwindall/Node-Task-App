@@ -1,6 +1,8 @@
 const validator = require("validator")
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
+const jwt = require('jsonwebtoken')
+
 
 const userSchema = mongoose.Schema({ // you can you use the 'new' keyword or you can not use it
     password: {
@@ -25,6 +27,7 @@ const userSchema = mongoose.Schema({ // you can you use the 'new' keyword or you
     email: {
         type: String,
         required: true,
+        unique: true, // The email must be the only email in the database. Can't have multiples
         trim: true,
         lowercase: true,
         validate(value){
@@ -41,8 +44,46 @@ const userSchema = mongoose.Schema({ // you can you use the 'new' keyword or you
                 throw new Error("Age must be a positive number")
             }
         }
-    }
+    },
+    tokens : [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 })
+
+
+// The methods call is for specific instance methods
+// Remember that a function function has a this binding
+userSchema.methods.generateAuthToken = async function(){
+    const user = this
+    const token = jwt.sign({ _id: user._id.toString()}, 'Hello') // you need toString() because it can't be an object
+    user.tokens = user.tokens.concat({token})
+    await user.save()
+
+    return token
+}
+
+
+// The user statics are methods for all users to use
+userSchema.statics.findByCredentials = async (email, password) => { // using statics keyword for making your own functions on the schema
+    const user = await User.findOne({email})
+
+    if(!user){
+        throw new Error("Unable to login") // make sure message is the same
+    }
+
+    const isMatch = await bcrypt.compare(password,user.password)
+
+    if(!isMatch){
+        throw new Error("Unable to login")
+    }
+
+    return user
+}
+
+
 
 userSchema.pre("save", async function(next){
     const user = this
