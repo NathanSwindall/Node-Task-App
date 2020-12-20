@@ -11,6 +11,7 @@ const auth = async (req,res,next) => {
             throw new Error()
         }
 
+        req.token = token
         req.user = user // you can actually create keys on the req object
         next()
     } catch (error) {

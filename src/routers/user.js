@@ -28,6 +28,31 @@ router.post('/users/login', async (req, res) => {
     }
 })
 
+
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        req.user.tokens = req.user.tokens.filter((token) => {
+            return token.token !== req.token
+        })
+
+        await req.user.save()
+        res.send(req.user)
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
+router.post('/users/logoutAll', auth, async (req,res) => {
+    try {
+        req.user.tokens = []
+        await req.user.save()
+        res.send()
+        
+    } catch (error) {
+        res.status(500).send(error)
+    }
+})
+
 router.get('/users/me', auth, async (req,res) => {
     res.send(req.user)
 })
@@ -42,6 +67,7 @@ router.get('/users',auth, async (req,res) => {
  
 })
 
+//trash this endpoint
 router.get('/users/:id',async (req, res) => {
     const _id = req.params.id
 
@@ -57,7 +83,10 @@ router.get('/users/:id',async (req, res) => {
     
 })
 
-router.patch('/user/:id', async (req,res) => {
+
+
+
+router.patch('/user/me',auth, async (req,res) => {
     const userUpdates = Object.keys(req.body)
     const allowedUpdates = ['name', 'email', 'password', 'age']
     const isValidOperation = userUpdates.every((update) => allowedUpdates.includes(update))
@@ -67,31 +96,22 @@ router.patch('/user/:id', async (req,res) => {
     }
 
     try {
-        const user = await User.findById(req.params.id)
+        // const user = await User.findById(req.params.id)
         
-        userUpdates.forEach((update) => user[update] = req.body[update])
-        await user.save() // where out middleware actually changes. 
-        
-        //const user = await User.findByIdAndUpdate(req.params.id, req.body, {new: true, runValidators: true}) // new gives new user back, run validation for the update
-        if(!user){
-            return res.status(404).send()
-        }
-
-        res.send(user)
+        userUpdates.forEach((update) => req.user[update] = req.body[update])
+        await req.user.save() // where out middleware actually changes. 
+        res.send(req.user)
     } catch (error) {
         res.status(400).send(error)
     }
 })
 
-router.delete('/user/:id', async (req,res) => {
+
+router.delete('/user/me',auth, async (req,res) => {
      
     try {
-        const user = await User.findByIdAndDelete(req.params.id)
-        if(!user){
-            return res.status(404).send()
-        }
-
-        res.send(user)
+        await req.user.remove()
+        res.send(req.user)
     } catch (error) {
         res.status(500).send(error)
     }

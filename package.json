@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
-    "token-dev": "nodemon playground/17-tokens-play.js"
+    "token-dev": "nodemon playground/17-tokens-play.js",
+    "dog-owner-dev": "nodemon playground/20-model-relationships.js"
   },
   "keywords": [],
   "author": "",
