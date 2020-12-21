@@ -53,6 +53,13 @@ const userSchema = mongoose.Schema({ // you can you use the 'new' keyword or you
     }]
 })
 
+// Not actual data stored in the database, but just a property stored there
+userSchema.virtual('user_tasks', {
+    ref: 'Task', // This is the model (collection you a referencing)
+    localField: '_id', // This is the field in the User model
+    foreignField: 'owner' // This is the field that is the same in the Task model
+})
+
 
 // The methods call is for specific instance methods
 // Remember that a function function has a this binding

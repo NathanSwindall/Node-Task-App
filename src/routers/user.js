@@ -24,7 +24,7 @@ router.post('/users/login', async (req, res) => {
         const token = await user.generateAuthToken()
         res.send({user, token})
     } catch (error) {
-        res.status(400).send(error)
+        res.status(401).send({error: "Unable to authenticate"})
     }
 })
 
@@ -67,21 +67,6 @@ router.get('/users',auth, async (req,res) => {
  
 })
 
-//trash this endpoint
-router.get('/users/:id',async (req, res) => {
-    const _id = req.params.id
-
-    try {
-        const user = await User.findById(_id)
-        if( !user){
-            return res.status(404).send()
-        }
-        res.send(user)
-    } catch (error) {
-        res.status(500).send(error)
-    }
-    
-})
 
 
 

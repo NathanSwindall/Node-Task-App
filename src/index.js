@@ -2,6 +2,7 @@ const express = require('express')
 require("./db/mongoose")
 const userRouter = require('./routers/user')
 const taskRouter = require('./routers/task')
+const user_tasks = require('../playground/21-model-relationship2')
 
 
 
@@ -21,5 +22,7 @@ app.use(taskRouter)
 app.listen(port, () => {
     console.log('Server is up on port ' + port)
 })
+
+
 
 
