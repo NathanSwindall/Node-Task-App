@@ -2,6 +2,7 @@ const validator = require("validator")
 const mongoose = require("mongoose")
 const bcrypt = require("bcryptjs")
 const jwt = require('jsonwebtoken')
+const Task = require("./task")
 
 
 const userSchema = mongoose.Schema({ // you can you use the 'new' keyword or you can not use it
@@ -113,6 +114,12 @@ userSchema.pre("save", async function(next){
     
 
     next() // must call this boilerplate code so that the function doesn't hang
+})
+
+userSchema.pre("remove", async function(next){
+    const user = this
+    await Task.deleteMany({owner: user._id})
+    next()
 })
 
 const User = mongoose.model('User',userSchema )
