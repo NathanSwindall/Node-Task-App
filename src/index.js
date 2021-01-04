@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000
 
 
 
-app.use(express.json())
+app.use(express.json()) // This is middleware so you know the incoming request is in JSON format
 app.use(userRouter)
 app.use(taskRouter)
 

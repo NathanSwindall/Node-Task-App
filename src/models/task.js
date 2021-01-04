@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
 
 const taskSchema = new mongoose.Schema({
     description: {
@@ -17,6 +16,8 @@ const taskSchema = new mongoose.Schema({
         required: true,
         ref: "User"
     }
+}, {
+    timestamps: true // This is part of the options part in the mongoose database
 })
 
 const Task = mongoose.model('Task',taskSchema)
