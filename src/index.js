@@ -1,22 +1,5 @@
-const express = require('express')
-require("./db/mongoose")
-const userRouter = require('./routers/user')
-const taskRouter = require('./routers/task')
-const user_tasks = require('../playground/21-model-relationship2')
-
-
-
-
-
-const app = express()
+const app = require("../src/app")
 const port = process.env.PORT || 3000
-
-
-
-app.use(express.json()) // This is middleware so you know the incoming request is in JSON format
-app.use(userRouter)
-app.use(taskRouter)
-
 
 
 app.listen(port, () => {
